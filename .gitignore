@@ -29,4 +29,6 @@ acceptance/.bundle
 *~
 /*.samples
 coverage/
-151.101.32.133
+log
+.vagrant
+vendor
