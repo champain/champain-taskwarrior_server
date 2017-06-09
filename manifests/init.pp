@@ -29,7 +29,7 @@
 #
 # @example
 #    class { 'taskwarrior_server':
-#      servers => [ 'pool.ntp.org', 'ntp.local.company.com' ],
+#      build_taskwarriord => false,
 #    }
 #
 # Authors
@@ -43,34 +43,11 @@
 # Copyright 2017 Jacob Castello, unless otherwise noted.
 #
 class taskwarrior_server ( 
-  String $task_git_source = 'https://git.tasktools.org/TM/taskd.git',
-  String $task_git_revision = 'master',
-  String $build_packages = []
-) {
-
-  $_build_packages = [
-    'git',
-    'libuuid',
-    'libuuid-devel',
-    'gnutls',
-    'gnutls-c++',
-    'gnutls-devel',
-    'make',
-    'cmake',
-    'gcc',
-    'gcc-c++',
-  ]
-
-  package { $build_packages:
-    ensure =>  present,
-  }
-
-  vcsrepo { '/opt/source':
-    ensure   => present,
-    provider => git,
-    source   => $task_git_source,
-    revision => $task_git_revision,
-  }
+  String $task_git_source     = 'https://git.tasktools.org/TM/taskd.git',
+  String $task_git_revision   = 'master',
+  Array $build_packages       = $::taskwarrior_server::params::build_packages,
+  Boolean $build_taskwarriord = $::taskwarrior_server::params::build_taskwarriord,
+) inherits ::taskwarrior_server::params {
 
   file { '/var/taskd':
     ensure => directory,
@@ -85,7 +62,22 @@ class taskwarrior_server (
     group   => 'root',
     mode    => '0644',
     content => template('taskwarrior_server/config.erb'),
+    require => File['/var/taskd'],
   }
 
+  if $build_taskwarriord {
+    include ::taskwarrior_server::build
+  }
+
+  if $::os['family'] == 'RedHat' and $::os['release']['major'] == '7' {
+    class { '::taskwarrior_server::unit_file':
+      require =>  Class['::taskwarrior_server::build'],
+    }
+  }
+
+  service { 'taskd':
+    ensure  => 'running',
+    enable  => true,
+  }
 
 }
