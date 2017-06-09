@@ -1,28 +1,24 @@
 # Class: taskwarrior_server
 # ===========================
 #
-# Full description of class taskwarrior_server here.
+# taskwarrior_server aims to install and configure
+# taskd, the server component of taskwarrior
+# that enables a user to share task lists among
+# devices with the taskwarrior client or application
 #
 # Parameters
 # ----------
 #
 # Document parameters here.
 #
-# * `sample parameter`
+# * `task_git_source`
+# This is the git repo from which taskd is cloned
 # Explanation of what this parameter affects and what it defaults to.
 # e.g. "Specify one or more upstream ntp servers as an array."
 #
 # Variables
 # ----------
 #
-# Here you should define a list of variables that this module would require.
-#
-# * `sample variable`
-#  Explanation of how this variable affects the function of this class and if
-#  it has a default. e.g. "The parameter enc_ntp_servers must be set by the
-#  External Node Classifier as a comma separated list of hostnames." (Note,
-#  global variables should be avoided in favor of class parameters as
-#  of Puppet 2.6.)
 #
 # Examples
 # --------
@@ -42,7 +38,7 @@
 #
 # Copyright 2017 Jacob Castello, unless otherwise noted.
 #
-class taskwarrior_server ( 
+class taskwarrior_server (
   String $task_git_source     = 'https://git.tasktools.org/TM/taskd.git',
   String $task_git_revision   = 'master',
   Array $build_packages       = $::taskwarrior_server::params::build_packages,

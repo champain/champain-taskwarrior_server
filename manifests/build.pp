@@ -1,7 +1,7 @@
 # This is probably a bad idea, but a good
 # exercise. Build the taskwarrior server from
 # source
-class taskwarrior_server::build ( 
+class taskwarrior_server::build (
   String $task_git_source   = $taskwarrior_server::task_git_source,
   String $task_git_revision = $taskwarrior_server::task_git_revision,
   Array $build_packages     = $taskwarrior_server::build_packages,
@@ -26,7 +26,7 @@ class taskwarrior_server::build (
     refreshonly => true,
     subscribe   => Vcsrepo['/opt/source/taskd.git'],
   }
-  
+
   exec { 'make taskd':
     command     => 'make',
     cwd         => '/opt/source/taskd.git',
@@ -42,5 +42,5 @@ class taskwarrior_server::build (
     refreshonly => true,
     subscribe   => Vcsrepo['/opt/source/taskd.git'],
   }
-    
+
 }
